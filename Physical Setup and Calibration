@@ -1,0 +1,16 @@
+// Inside the if (httpCode > 0) block
+String payload = http.getString();
+Serial.println("Received: " + payload);
+
+// Find the comma to split the string
+int commaIndex = payload.indexOf(',');
+if (commaIndex > 0) {
+  int x = payload.substring(0, commaIndex).toInt();
+  int y = payload.substring(commaIndex + 1).toInt();
+
+  // Define a "button" area (e.g., top-left corner)
+  if (x > 10 && x < 50 && y > 10 && y < 50) {
+    Serial.println("Button 1 PRESSED!");
+    // Add code here to do something, like control a relay or LED
+  }
+}
