@@ -1,0 +1,50 @@
+// ESP32 Board Code: The Client / "The Brain"
+
+#include <WiFi.h>
+#include <HTTPClient.h>
+
+// WiFi credentials for the Access Point created by the ESP32-CAM
+const char* ssid = "ProjectorTouch_AP";
+const char* password = "password123";
+
+// The URL where the CAM server provides coordinates
+// The default IP for a softAP is 192.168.4.1
+const char* serverUrl = "http://192.168.4.1/coords";
+
+void setup() {
+  Serial.begin(115200);
+
+  // Connect to the CAM's WiFi network
+  WiFi.begin(ssid, password);
+  Serial.print("Connecting to WiFi..");
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nConnected!");
+}
+
+void loop() {
+  if (WiFi.status() == WL_CONNECTED) {
+    HTTPClient http;
+
+    http.begin(serverUrl); // Specify the URL
+    int httpCode = http.GET(); // Make the request
+
+    if (httpCode > 0) { // Check for a successful response
+      String payload = http.getString();
+      Serial.println("Received: " + payload);
+
+      // Here you can parse the payload and use the coordinates
+      // Example: payload is "85,60"
+      // You can add code here to check if the coordinates are inside a "button" area
+      
+    } else {
+      Serial.println("Error on HTTP request");
+    }
+
+    http.end(); // Free the resources
+  }
+
+  delay(200); // Wait 200ms before the next request
+}
